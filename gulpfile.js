@@ -46,7 +46,7 @@ gulp.task('compress-main', gulp.series('concat-main-js', function() {
 gulp.task('build', gulp.series('compress-main', 'concat-main-css') );
 
 gulp.task('watch', function() {
-  var src = mainTsSrc.concat(mainCssSrc);
+  var src = mainJsSrc.concat(mainCssSrc);
   gulp.watch(src, gulp.series('build') )
     .on('change', function(path) {
       console.log(path);
