@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=9" />
+  <link rel="stylesheet" href="../lib/ganttchart.css" />
+  <style>
+
+BODY {
+  margin : 0px;
+  padding : 0px;
+  overflow : hidden;
+}
+
+BODY, BUTTON {
+  font-family : 'Meiryo UI', sans-serif;
+  font-size : 12px;
+}
+
+.app-data {
+  width : 1000px;
+  height : 500px;
+  font-family : monospace;
+  font-size : 12px;
+}
+
+  </style>
+  <script src="../lib/ganttchart.js"></script>
+  <script src="app-data.js"></script>
+  <script src="index.js"></script>
+  <title>gantt-chart</title>
+</head>
+<body>
+
+<div id="toolbar" class="toolbar">
+  <button id="toggleDisplay"> Toggle </button>
+  <button id="toggleDate"> Day/Week </button>
+  <button id="test"> Test </button>
+</div>
+<div id="back">
+  <div>Save data as app-data.js.</div>
+  <textarea id="appData" class="app-data"></textarea>
+</div>
+<div id="main" class="pr-main"></div>
+
+</body>
+</html>

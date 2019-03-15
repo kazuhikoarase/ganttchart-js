@@ -1,0 +1,189 @@
+/*
+ * gantt-app
+ * @author Kazuhiko Arase
+ * Licensed under MIT LICENSE
+ */
+
+.pr-main {
+  border : 1px solid rgba(0,0,0,0.2);
+  display : inline-block;
+}
+
+.pr-main TABLE TD {
+  white-space : nowrap;
+  overflow : hidden;
+  position : relative;
+  padding : 0px;
+  border-right : 1px solid rgba(0,0,0,0.2);
+  border-bottom : 1px solid rgba(0,0,0,0.2);
+  font-family : 'Meiryo UI', sans-serif;
+  font-size : 12px;
+}
+
+.pr-date {
+  text-align : right;
+}
+
+.pr-number {
+  text-align : right;
+}
+
+.pr-header {
+  background-color : rgba(170,170,255,0.4);
+}
+
+.pr-footer {
+  background-color : rgba(0,0,0,0.2);
+}
+
+.pr-selected {
+  background-color : rgba(255,255,0,0.2);
+}
+
+.pr-holiday {
+  background-color : rgba(0,0,0,0.1);
+}
+
+.pr-readonly {
+  color : rgba(0,0,0,0.8);
+  background-color : rgba(255,255,0,0.1);
+}
+
+.pr-grouped {
+  color : rgba(0,0,0,0.6);
+  background-color : rgba(0,0,0,0.1);
+}
+
+.pr-header.pr-holiday {
+  background-color : rgba(170,170,255,0.6);
+}
+
+.pr-selected.pr-holiday {
+  background-color : rgba(255,255,0,0.1);
+}
+
+.pr-grouped.pr-holiday {
+  background-color : rgba(0,0,0,0.2);
+}
+
+.pr-selected.pr-grouped {
+  background-color : rgba(255,200,0,0.1);
+}
+
+.pr-selected.pr-readonly {
+  background-color : rgba(255,255,0,0.3);
+}
+
+.pr-selected.pr-grouped.pr-holiday {
+  background-color : rgba(200,200,0,0.2);
+}
+
+.pr-contextmenu {
+  background-color : rgba(255,255,255,1);
+  border : 1px solid rgba(0,0,0,0.2);
+  cursor : default;
+}
+
+.pr-menuitem {
+  padding : 2px 8px;
+}
+
+.pr-menuitem:hover {
+  background-color : rgba(0,0,0,0.1);
+}
+
+TD.pr-indent0 { }
+TD.pr-indent1 { padding-left : 10px !important; }
+TD.pr-indent2 { padding-left : 20px !important; }
+TD.pr-indent3 { padding-left : 30px !important; }
+TD.pr-indent4 { padding-left : 40px !important; }
+TD.pr-indent5 { padding-left : 50px !important; }
+TD.pr-indent6 { padding-left : 60px !important; }
+TD.pr-indent7 { padding-left : 70px !important; }
+TD.pr-indent8 { padding-left : 80px !important; }
+
+.pr-graph-path-s {
+  stroke-linecap : butt;
+  stroke-linejoin : round;
+  stroke-width : 1;
+  stroke : rgba(0,0,0,0.6);
+  fill : none;
+}
+
+.pr-graph-path-f {
+  stroke : none;
+  fill : rgba(0,0,0,0.6);
+}
+
+.pr-graph-label {
+  stroke : none;
+  fill : rgba(0,0,0,0.6);
+}
+
+.pr-est-bar {
+  stroke : none;
+  fill : rgba(0,0,0,0.2);
+}
+
+.pr-grouped .pr-est-bar {
+}
+
+.pr-indent0.pr-grouped .pr-est-bar { fill : rgba(255,0,0,0.2); }
+.pr-indent1.pr-grouped .pr-est-bar { fill : rgba(255,127,0,0.2); }
+.pr-indent2.pr-grouped .pr-est-bar { fill : rgba(0,255,0,0.2); }
+.pr-indent3.pr-grouped .pr-est-bar { fill : rgba(0,0,255,0.2); }
+.pr-indent4.pr-grouped .pr-est-bar { fill : rgba(0,0,0,0.2); }
+.pr-indent5.pr-grouped .pr-est-bar { fill : rgba(0,0,0,0.2); }
+.pr-indent6.pr-grouped .pr-est-bar { fill : rgba(0,0,0,0.2); }
+.pr-indent7.pr-grouped .pr-est-bar { fill : rgba(0,0,0,0.2); }
+.pr-indent8.pr-grouped .pr-est-bar { fill : rgba(0,0,0,0.2); }
+
+.pr-act-bar {
+  stroke : none;
+  fill : rgba(0,0,0,0.4);
+}
+
+.pr-grouped .pr-act-bar {
+}
+
+.pr-indent0.pr-grouped .pr-act-bar { fill : rgba(255,0,0,0.4); }
+.pr-indent1.pr-grouped .pr-act-bar { fill : rgba(255,127,0,0.4); }
+.pr-indent2.pr-grouped .pr-act-bar { fill : rgba(0,255,0,0.4); }
+.pr-indent3.pr-grouped .pr-act-bar { fill : rgba(0,0,255,0.4); }
+.pr-indent4.pr-grouped .pr-act-bar { fill : rgba(0,0,0,0.4); }
+.pr-indent5.pr-grouped .pr-act-bar { fill : rgba(0,0,0,0.4); }
+.pr-indent6.pr-grouped .pr-act-bar { fill : rgba(0,0,0,0.4); }
+.pr-indent7.pr-grouped .pr-act-bar { fill : rgba(0,0,0,0.4); }
+.pr-indent8.pr-grouped .pr-act-bar { fill : rgba(0,0,0,0.4); }
+
+.pr-act-label SPAN {
+  background-color : rgba(255,255,255,0.6);
+}
+
+.pr-good {
+  color: rgba(0,255,0,0.8);
+}
+
+.pr-bad {
+  color: rgba(255,0,0,0.8);
+}
+
+.pr-filter-button {
+  cursor : default;
+}
+
+.pr-filter-button RECT {
+  storke : none;
+  fill : rgba(0,0,0,0.2);
+}
+
+.pr-filter-button RECT:hover {
+  storke : none;
+  fill : rgba(0,0,0,0.4);
+}
+
+.pr-filter-button PATH {
+  storke : none;
+  fill : rgba(0,0,0,0.8);
+  pointer-events : none;
+}

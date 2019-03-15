@@ -1,0 +1,77 @@
+/*
+ * gantt-lib
+ * @author Kazuhiko Arase
+ * Licensed under MIT LICENSE
+ */
+
+.pr-h-bar {
+  border-top : 1px solid rgba(0,0,0,0.4);
+}
+
+.pr-v-bar {
+  border-left : 1px solid rgba(0,0,0,0.4);
+}
+
+.pr-resize-bar {
+  border-left : 1px dotted rgba(0,0,0,0.8);
+}
+
+.pr-select {
+  cursor : default;
+  border : 1px solid rgba(0,0,0,0.2);
+  background-color : rgba(255,255,255,1);
+}
+
+.pr-calendar {
+  cursor : default;
+  border : 1px solid rgba(0,0,0,0.4);
+  background-color : rgba(255,255,255,1);
+}
+
+.pr-calendar TH,
+.pr-calendar TD {
+  padding : 1px 2px;
+}
+
+.pr-calendar TH {
+  text-align : center;
+}
+
+.pr-calendar TD {
+  text-align : right;
+}
+
+.pr-calendar TD:hover {
+  background-color : rgba(0,0,0,0.2);
+}
+
+.pr-calendar TD:not(.pr-current-month) {
+  color : rgba(0,0,0,0.4);
+}
+
+.pr-cal-button {
+  stroke : none;
+	fill : rgba(255,255,255,1);
+}
+
+.pr-cal-button-arrow {
+  stroke : none;
+  fill : rgba(0,0,0,0.6);
+}
+
+.pr-cal-button:hover {
+  fill : rgba(0,0,0,0.2);
+}
+
+.pr-select-option:hover {
+  background-color : rgba(0,0,0,0.1);
+}
+
+.pr-select-option-selected,
+.pr-calendar TD.pr-selected-date {
+  background-color : rgba(0,0,0,0.2);
+}
+
+::-ms-clear {
+  display : none;
+}
