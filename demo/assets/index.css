@@ -1,0 +1,18 @@
+
+BODY {
+  margin : 0px;
+  padding : 0px;
+  overflow : hidden;
+}
+
+BODY, BUTTON {
+  font-family : 'Meiryo UI', sans-serif;
+  font-size : 12px;
+}
+
+.app-data {
+  width : 1000px;
+  height : 500px;
+  font-family : monospace;
+  font-size : 12px;
+}
