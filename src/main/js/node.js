@@ -1,5 +1,5 @@
 //
-// node-glue
+// ganttchart - node glue
 // @author Kazuhiko Arase
 // Licensed under MIT LICENSE
 //

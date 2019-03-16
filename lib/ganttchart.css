@@ -1,5 +1,5 @@
 /*
- * gantt-app
+ * ganttchart - app
  * @author Kazuhiko Arase
  * Licensed under MIT LICENSE
  */
@@ -189,7 +189,7 @@ TD.pr-indent8 { padding-left : 80px !important; }
 }
 
 /*
- * gantt-lib
+ * ganttchart - lib
  * @author Kazuhiko Arase
  * Licensed under MIT LICENSE
  */
