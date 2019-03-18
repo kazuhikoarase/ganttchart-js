@@ -187,3 +187,12 @@ TD.pr-indent8 { padding-left : 80px !important; }
   fill : rgba(0,0,0,0.8);
   pointer-events : none;
 }
+
+.pr-filter-ui {
+  background-color: rgba(255,255,255,1);
+  border : 1px solid rgba(0,0,0,0.5);
+}
+
+.pr-filter-item:hover {
+  background-color : rgba(0,0,0,0.1);
+}

@@ -1307,12 +1307,54 @@
       var defaultRenderer = defaultCellRendererFactory(td);
       var tableModel = td.tableModel;
       var filterButton = null;
+      var currentCell = null;
+
+      var filterButton_clickHandler = function(event) {
+        var valMap = {};
+        var taskCount = tableModel.getTaskCount();
+        for (var i = 0; i < taskCount; i += 1) {
+          var task = tableModel.getTaskAt(i);
+          var value = task[currentCell.dataField];
+          if (value && !valMap[value]) {
+            valMap[value] = true;
+          }
+        }
+        var vals = Object.keys(valMap);
+        vals.sort();
+
+        var document_mousedownHandler = function(event) {
+          if (util.closest(event.target, { $el : filterUI }) ) {
+            return;
+          }
+          console.log('off');
+          document.body.removeChild(filterUI);
+          util.$(document).off('mousedown', document_mousedownHandler);
+        };
+
+        var off = util.offset(td.$el)
+
+        var filterUI = util.createElement('div', {
+          attrs : { 'class' : '${prefix}-filter-ui' }, 
+          style : { position : 'absolute',
+            left : (off.left - 1) + 'px',
+            top : (off.top - 1 + td.$el.offsetHeight) + 'px' }
+        }, [].concat(vals.map(function(val) {
+          return util.createElement('div', {
+            attrs : { 'class' : '${prefix}-filter-item' },
+            props : { textContent : val } });
+        })) );
+
+        document.body.appendChild(filterUI);
+        util.$(document).on('mousedown', document_mousedownHandler);
+      };
 
       return {
         render : function(cell) {
 //          cell.value = ''
+          currentCell = cell;
           if (filterButton == null && cell.filterEnabled) {
             filterButton = createFilterButton();
+            util.$(filterButton).on('click', filterButton_clickHandler);
             td.$el.appendChild(filterButton);
           }
           defaultRenderer.render(cell);
