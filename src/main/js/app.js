@@ -775,27 +775,24 @@
                 cell.className += ' ${prefix}-act-label';
               }
 
-              var minCol = Math.max(this.currentTableState.minCol,
-                  numColumns[0] + numColumns[1]);
-
-              if (col == minCol) {
-
-                cell.graphParams = {
-                  baseDate : date,
-                  dayInPixel : dateSpec.dateCellWidth / dateSpec.cellInDays,
-                  task : task,
-                  taskEx : taskEx
-                };
-
+              if (this.currentTableState) {
+                var minCol = Math.max(this.currentTableState.minCol,
+                    numColumns[0] + numColumns[1]);
+                if (col == minCol) {
+                  cell.graphParams = {
+                    baseDate : date,
+                    dayInPixel : dateSpec.dateCellWidth / dateSpec.cellInDays,
+                    task : task,
+                    taskEx : taskEx
+                  };
+                }
               }
+
             }
           }
 
         } else {
           cell.className += ' ${prefix}-footer';
-          if (cell.factory == graphFactory) {
-throw 'wtf';
-          }
         }
 
         return cell;
