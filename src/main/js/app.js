@@ -535,15 +535,12 @@
           }
         };
       },
+      filters : {},
+      getFilterFor : function(dataField) {
+        return this.filters[dataField] ||
+            (this.filters[dataField] = { rejects : {} });
+      },
       acceptTask : function(task) {
-        // TODO
-        /*
-        if (typeof task.assignees == 'object') {
-          return task.assignees.length > 0;
-        } else {
-          return task.assignee == 'Bob';
-        }
-        */
         return true;
       },
       getViewRows : function() {
@@ -820,7 +817,29 @@
           return newTask;
         });
       },
-
+      applyfilterHandler : function(event) {
+        var filtered = false;
+        for (var dataField in this.filters) {
+          var filter = this.filters[dataField];
+          if (Object.keys(filter.rejects).length > 0) {
+            filtered = true;
+          }
+        }
+        if (filtered) {
+          var filter = this.getFilterFor('assignee');
+          this.acceptTask = function(task) {
+            if (typeof task.assignees == 'object') {
+              return task.assignees.length > 0;
+            } else {
+              return !filter.rejects[task.assignee];
+            }
+          };
+        } else {
+          this.acceptTask = function(task) { return true; };
+        }
+        this.invalidateTasks();
+        table.invalidate();
+      },
       valuechangeHandler : function(event, detail) {
 
         var numColumns = this.getNumColumns();
@@ -896,8 +915,9 @@
       });
     }(table.tables);
 
-    table.model.on('valuechange', table.model.valuechangeHandler);
-
+    table.model.on('valuechange', table.model.valuechangeHandler).
+      on('applyfilter', table.model.applyfilterHandler);
+    
     var action = function(label) {
 
       var swapTask = function(row1, row2) {
@@ -1302,6 +1322,82 @@
           ]);
     };
 
+    var createCheckbox = function() {
+      var size = 15;
+      var r = 4;
+      var path = util.createSVGElement('path',
+          { attrs : { d : 'M3 6L7 11L12 4' } });
+      var rect = util.createSVGElement('rect',
+          { attrs : { 'class' : '${prefix}-all', x : r, y : r,
+            width : size - r * 2, height : size - r * 2 } });
+      return {
+        $el : util.createSVGElement('svg',
+          { attrs : { class : '${prefix}-checkbox',
+              width : size, height : size },
+            style : {  } },
+          [
+            util.createSVGElement('rect',
+              { attrs : { x : 1.5, y : 1.5,
+                width : size - 3, height : size - 3 } }),
+            path,
+            rect
+          ]),
+        state : 0,
+        setState : function(state) {
+          switch(state) {
+          case 0 :
+            path.style.display = 'none';
+            rect.style.display = 'none';
+            break;
+          case 1 :
+            path.style.display = '';
+            rect.style.display = 'none';
+            break;
+          case 2 :
+            path.style.display = 'none';
+            rect.style.display = '';
+            break;
+          default :
+            throw 'state:' + state;
+          }
+          this.state = state;
+        },
+        getState : function() {
+          return this.state;
+        }
+      };
+    };
+
+    var createFilterItem = function(label, action) {
+      var checkbox = createCheckbox();
+      return {
+        $el : util.createElement('div', {
+          attrs : { 'class' : '${prefix}-filter-item' },
+          on : { mousedown : function(event) {
+            event.preventDefault();
+          }, click : action } },
+          [ checkbox.$el,
+            util.createElement('span', {
+              attrs : { 'class' : '${prefix}-checkbox-label' },
+              props : { textContent : label } } ) ]),
+        setState : function(state) {
+          checkbox.setState(state);
+        },
+        getState : function() {
+          return checkbox.getState();
+        }
+      };
+    };
+
+    var createButton = function(label, action) {
+      return util.createElement('span', {
+        attrs : { 'class' : '${prefix}-button' },
+        props : {textContent : label},
+        on : { mousedown : function(event) {
+          event.preventDefault();
+        }, click : action } });
+    };
+
     var headerFactory = function(td) {
 
       var defaultRenderer = defaultCellRendererFactory(td);
@@ -1310,39 +1406,107 @@
       var currentCell = null;
 
       var filterButton_clickHandler = function(event) {
-        var valMap = {};
-        var taskCount = tableModel.getTaskCount();
-        for (var i = 0; i < taskCount; i += 1) {
-          var task = tableModel.getTaskAt(i);
-          var value = task[currentCell.dataField];
-          if (value && !valMap[value]) {
-            valMap[value] = true;
+
+        var vals = function() {
+          var valMap = {};
+          var taskCount = tableModel.getTaskCount();
+          for (var i = 0; i < taskCount; i += 1) {
+            var task = tableModel.getTaskAt(i);
+            var value = task[currentCell.dataField];
+            if (value && !valMap[value]) {
+              valMap[value] = true;
+            }
+          }
+          var vals = Object.keys(valMap);
+          vals.sort();
+          return [messages.ALL].concat(vals);
+        }();
+
+        var dispose = function() {
+          if (filterUI) {
+            document.body.removeChild(filterUI);
+            util.$(document).off('mousedown', document_mousedownHandler);
+            filterUI = null;
           }
         }
-        var vals = Object.keys(valMap);
-        vals.sort();
-
         var document_mousedownHandler = function(event) {
           if (util.closest(event.target, { $el : filterUI }) ) {
             return;
           }
-          console.log('off');
-          document.body.removeChild(filterUI);
-          util.$(document).off('mousedown', document_mousedownHandler);
+          dispose();
         };
 
         var off = util.offset(td.$el)
+
+        var filter = tableModel.getFilterFor(currentCell.dataField);
+
+        var filterItems = vals.map(function(val, i) {
+          var filterItem = createFilterItem(val, function() {
+            if (i == 0) {
+              var state = filterItem.getState() == 1? 0 : 1;
+              filterItems.forEach(function(filterItem, i) {
+                if (i > 0) {
+                  filterItem.setState(state);
+                }
+              });
+              filterItem.setState(state);
+            } else if (i > 0) {
+              filterItem.setState(filterItem.getState() == 1? 0 : 1);
+              updateAllCheck();
+            }
+          });
+          if (i > 0) {
+            filterItem.setState(filter.rejects[val]? 0 : 1);
+          }
+          return filterItem;
+        });
+
+        var updateAllCheck = function() {
+          var checkCount = 0;
+          filterItems.forEach(function(filterItem, i) {
+            if (i > 0) {
+              if (filterItem.getState() == 1) {
+                checkCount += 1;
+              }
+            }
+          });
+          filterItems[0].setState(checkCount == 0? 0 :
+            checkCount == filterItems.length - 1? 1 : 2);
+        };
+
+        var applyFilter = function() {
+          var rejects = {};
+          filterItems.forEach(function(filterItem, i) {
+            if (i > 0) {
+              if (filterItem.getState() == 0) {
+                rejects[vals[i]] = true;
+              }
+            }
+          });
+          filter.rejects = rejects;
+          table.model.trigger('applyfilter');
+        };
+
+        updateAllCheck();
 
         var filterUI = util.createElement('div', {
           attrs : { 'class' : '${prefix}-filter-ui' }, 
           style : { position : 'absolute',
             left : (off.left - 1) + 'px',
             top : (off.top - 1 + td.$el.offsetHeight) + 'px' }
-        }, [].concat(vals.map(function(val) {
-          return util.createElement('div', {
-            attrs : { 'class' : '${prefix}-filter-item' },
-            props : { textContent : val } });
-        })) );
+        }, [
+          util.createElement('div',
+            filterItems.map(function(item) { return item.$el; }) ),
+          util.createElement('div', [
+            createButton(messages.APPLY, function() {
+              applyFilter();
+              dispose();
+            }),
+            createButton(messages.CANCEL, function() {
+              dispose();
+            })
+          ])
+        ]);
 
         document.body.appendChild(filterUI);
         util.$(document).on('mousedown', document_mousedownHandler);
@@ -1592,7 +1756,12 @@
       MOVE_UP : 'Move Up',
       MOVE_DOWN : 'Move Down',
       INDENT_UP : 'Indent Up <',
-      INDENT_DOWN : 'Indent Down >'
+      INDENT_DOWN : 'Indent Down >',
+
+      ALL : 'All',
+      BLANK : '(Blank)',
+      APPLY : 'Apply',
+      CANCEL : 'Cancel'
     });
 
     util.extend(i18n.ja.messages, {
@@ -1618,7 +1787,12 @@
       MOVE_UP : '上へ移動',
       MOVE_DOWN : '下へ移動',
       INDENT_UP : '一段上げる ←',
-      INDENT_DOWN : '一段下げる →'
+      INDENT_DOWN : '一段下げる →',
+
+      ALL : '全て',
+      BLANK : '(空白)',
+      APPLY : '適用',
+      CANCEL : 'キャンセル'
     });
 
     return i18n.getInstance().messages;

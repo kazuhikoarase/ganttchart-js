@@ -758,7 +758,6 @@
     var setOptions = function(options) {
       model.options = options;
       model.indexByValue = null;
-      model.selectedIndex = -1;
     };
     var getDefaultOptions = function() {
       return cell.options? cell.options() : [];
@@ -884,6 +883,7 @@
             }
           });
           setOptions(options);
+          setSelectedIndex(-1);
           render();
         }
         break;
@@ -1073,7 +1073,6 @@
             }
             label.style.display = '';
             textField.style.display = 'none';
-
             return { newValue : value, oldValue : cell.value };
           }
         };
