@@ -428,7 +428,7 @@
       tasks : null,
       selectedRows : [],
 
-      dateTableState : null,
+      currentTableState : null,
 
       taskExByRow : null,
       viewRows : null,
@@ -536,6 +536,7 @@
         };
       },
       filters : {},
+      rejectedTasks : {},
       getFilterFor : function(dataField) {
         return this.filters[dataField] ||
             (this.filters[dataField] = { rejects : {} });
@@ -774,7 +775,7 @@
                 cell.className += ' ${prefix}-act-label';
               }
 
-              var minCol = Math.max(this.dateTableState.minCol,
+              var minCol = Math.max(this.currentTableState.minCol,
                   numColumns[0] + numColumns[1]);
 
               if (col == minCol) {
@@ -792,6 +793,9 @@
 
         } else {
           cell.className += ' ${prefix}-footer';
+          if (cell.factory == graphFactory) {
+throw 'wtf';
+          }
         }
 
         return cell;
@@ -837,6 +841,7 @@
         } else {
           this.acceptTask = function(task) { return true; };
         }
+
         this.invalidateTasks();
         table.invalidate();
       },
@@ -1413,8 +1418,10 @@
           for (var i = 0; i < taskCount; i += 1) {
             var task = tableModel.getTaskAt(i);
             var value = task[currentCell.dataField];
-            if (value && !valMap[value]) {
-              valMap[value] = true;
+            if (typeof value == 'string') {
+              if (!valMap[value]) {
+                valMap[value] = true;
+              }
             }
           }
           var vals = Object.keys(valMap);
@@ -1441,7 +1448,8 @@
         var filter = tableModel.getFilterFor(currentCell.dataField);
 
         var filterItems = vals.map(function(val, i) {
-          var filterItem = createFilterItem(val, function() {
+          var filterItem = createFilterItem(
+              val === ''? messages.BLANK : val, function() {
             if (i == 0) {
               var state = filterItem.getState() == 1? 0 : 1;
               filterItems.forEach(function(filterItem, i) {
@@ -1514,7 +1522,6 @@
 
       return {
         render : function(cell) {
-//          cell.value = ''
           currentCell = cell;
           if (filterButton == null && cell.filterEnabled) {
             filterButton = createFilterButton();
@@ -1591,7 +1598,7 @@
       };
 
       var layoutGraphCell = function() {
-        var tableState = tableModel.dateTableState;
+        var tableState = tableModel.currentTableState;
         var left = tableState.tableLeft;
         var top = tableState.tableTop;
         for (var col = tableState.minCol; col < td.col; col += 1) {
@@ -1650,18 +1657,6 @@
           this.getCellWidthAt(detail.col) + detail.deltaX);
       table.invalidate();
 
-    });
-
-    table.on('beforerender', function(event, detail) {
-
-      var dateTableState = null;
-      detail.tables.forEach(function(table) {
-        if (table.tblRow == 1 && table.tblCol == 2) {
-          dateTableState = table.tableState;
-        }
-      });
-
-      this.model.dateTableState = dateTableState;
     });
 
     table.on('click', function(event, detail) {
