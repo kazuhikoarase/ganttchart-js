@@ -187,3 +187,58 @@ TD.pr-indent8 { padding-left : 80px !important; }
   fill : rgba(0,0,0,0.8);
   pointer-events : none;
 }
+
+.pr-filter-ui {
+  background-color: rgba(255,255,255,1);
+  border : 1px solid rgba(0,0,0,0.5);
+  color : rgba(0,0,0,0.8);
+  cursor : default;
+}
+
+.pr-filter-item {
+  line-height : 1;
+  padding : 2px;
+}
+
+.pr-filter-item:hover {
+  background-color : rgba(0,0,0,0.1);
+}
+
+.pr-checkbox {
+  vertical-align : middle;
+}
+
+.pr-checkbox RECT {
+  stroke : rgba(0,0,0,0.4);
+  fill : none;
+}
+
+.pr-checkbox RECT.pr-all {
+  stroke : none;
+  fill : rgba(0,0,0,0.8);
+}
+
+.pr-checkbox PATH {
+  stroke-linecap : butt;
+  stroke-linejoin : round;
+  stroke-width : 2;
+  stroke : rgba(0,0,0,0.8);
+  fill : none;
+}
+
+.pr-checkbox-label {
+  display : inline-block;
+  vertical-align : middle;
+  margin-left : 2px;
+}
+
+.pr-button {
+  display : inline-block;
+  margin : 2px;
+  padding : 2px 4px;
+  border : 1px solid rgba(0,0,0,0.4);
+}
+
+.pr-button:hover {
+  background-color : rgba(0,0,0,0.1);
+}

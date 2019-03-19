@@ -758,7 +758,6 @@
     var setOptions = function(options) {
       model.options = options;
       model.indexByValue = null;
-      model.selectedIndex = -1;
     };
     var getDefaultOptions = function() {
       return cell.options? cell.options() : [];
@@ -771,7 +770,8 @@
         options.trigger('valuechange', model.options[selectedIndex]);
       } else {
         model.selectedIndex = -1;
-        options.trigger('valuechange', { label : textField.value });
+        options.trigger('valuechange',
+            { label : util.trim(textField.value) });
       }
     };
 
@@ -830,7 +830,7 @@
         }
         util.set(item.$el, {
           attrs : { 'class' : className },
-          props : { textContent : item.option.label || '\u00a0' },
+          props : { textContent : item.option.label || '' },
           style : { height : itemHeight + 'px' }
         });
 
@@ -874,9 +874,10 @@
       case 40: // Down
         break;
       default :
-        if (model.lastValue != textField.value) {
-          model.lastValue = textField.value;
-          var value = textField.value.toUpperCase();
+        var value = util.trim(textField.value);
+        if (model.lastValue != value) {
+          model.lastValue = value;
+          value = value.toUpperCase();
           var options = [];
           getDefaultOptions().forEach(function(option, i) {
             if (option.label.toUpperCase().indexOf(value) != -1) {
@@ -884,6 +885,7 @@
             }
           });
           setOptions(options);
+          setSelectedIndex(-1);
           render();
         }
         break;
@@ -1073,7 +1075,6 @@
             }
             label.style.display = '';
             textField.style.display = 'none';
-
             return { newValue : value, oldValue : cell.value };
           }
         };
@@ -1736,14 +1737,13 @@
           };
         };
 
-        this.trigger('beforerender', createDetail() );
-
         tables.forEach(function(table, t) {
+          table.model.currentTableState = table.tableState;
           table.render();
         }.bind(this));
 
-        // TODO pending.
-        //this.trigger('afterrender', createDetail() );
+        table.model.currentTableState = null;
+
       }
     });
 
@@ -1923,6 +1923,7 @@
             tr.$el.style.lineWidth = '1';
           });
           tr.$el.style.height = tableModel.getCellHeightAt(row) + 'px';
+          tr.$el.style.display = '';
           tr.row = row;
 
           var tdIndex = 0;
@@ -1979,7 +1980,7 @@
           for (var i = 0; i < restTds.length; i += 1) {
             restTds[i].renderer.render({});
           }
-          this.tbody.$el.childNodes[trIndex].style.height = '0px';
+          this.tbody.$el.childNodes[trIndex].style.display = 'none';
         }
 
         util.set(table, { style : {
