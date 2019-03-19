@@ -1569,9 +1569,12 @@
           estInfo.path = '';
 
           if (task.linkedTaskId && task.linkType) {
-            var linkedTaskRow = tableModel.getRowByTaskId(task.linkedTaskId);
+            var linkedTaskRow, linkedViewRow;
+            linkedTaskRow = tableModel.getRowByTaskId(task.linkedTaskId);
             if (typeof linkedTaskRow == 'number') {
-              var linkedViewRow = tableModel.getViewRows()[linkedTaskRow];
+              linkedViewRow = tableModel.getViewRows()[linkedTaskRow];
+            }
+            if (typeof linkedViewRow == 'number') {
               var linkedTask = tableModel.getTaskAt(linkedViewRow);
               var linkedTaskEx = tableModel.getTaskExAt(linkedTaskRow);
               var linkedEstInfo = calcEstInfo(
